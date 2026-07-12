@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /stories/{storyId} {
+      // Anyone (logged in or not) can read published stories.
+      allow read: if true;
+
+      // Only a signed-in user can create a story, and only as themselves.
+      allow create: if request.auth != null
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.wordCount is int
+                    && request.resource.data.wordCount <= 2000;
+
+      // Only the original author can edit or delete their story.
+      allow update, delete: if request.auth != null
+                             && resource.data.authorId == request.auth.uid;
+    }
+  }
+}
