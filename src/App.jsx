@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Write from './pages/Write.jsx'
+import EditStory from './pages/EditStory.jsx'
 import StoryDetail from './pages/StoryDetail.jsx'
 import MyStories from './pages/MyStories.jsx'
 
@@ -20,6 +21,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Write />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditStory />
             </ProtectedRoute>
           }
         />

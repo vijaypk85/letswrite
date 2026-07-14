@@ -13,9 +13,35 @@ service cloud.firestore {
                     && request.resource.data.wordCount is int
                     && request.resource.data.wordCount <= 2000;
 
-      // Only the original author can edit or delete their story.
-      allow update, delete: if request.auth != null
-                             && resource.data.authorId == request.auth.uid;
+      // The author can edit or delete any field on their own story.
+      // Any other signed-in user may only ever touch the `likedBy` field
+      // (used by the like button) — everything else about the story is locked.
+      allow update: if request.auth != null
+                    && (
+                      resource.data.authorId == request.auth.uid
+                      || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy'])
+                    );
+
+      allow delete: if request.auth != null
+                    && resource.data.authorId == request.auth.uid;
+
+      match /comments/{commentId} {
+        // Anyone can read comments.
+        allow read: if true;
+
+        // Only a signed-in user can post a comment, and only as themselves.
+        allow create: if request.auth != null
+                      && request.resource.data.authorId == request.auth.uid
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() > 0
+                      && request.resource.data.text.size() <= 1000;
+
+        // Only the comment's author can delete it. Comments aren't editable
+        // once posted (delete and repost instead).
+        allow delete: if request.auth != null
+                      && resource.data.authorId == request.auth.uid;
+        allow update: if false;
+      }
     }
   }
 }

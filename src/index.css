@@ -345,3 +345,147 @@ button {
   color: var(--text-muted);
   padding: 60px 0;
 }
+
+/* ---------- My stories: action buttons ---------- */
+.story-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.btn-ghost.btn-small {
+  border-color: rgba(34, 32, 27, 0.25);
+  color: var(--text-on-paper);
+  background: transparent;
+}
+
+.btn-ghost.btn-small:hover {
+  background: rgba(34, 32, 27, 0.06);
+}
+
+.btn-danger {
+  color: var(--danger);
+  border-color: rgba(168, 67, 58, 0.4);
+}
+
+.btn-danger:hover {
+  background: rgba(168, 67, 58, 0.1);
+}
+
+/* ---------- Likes ---------- */
+.like-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(34, 32, 27, 0.12);
+}
+
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(34, 32, 27, 0.25);
+  background: transparent;
+  color: var(--text-on-paper);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.like-btn:hover:not(:disabled) {
+  background: rgba(34, 32, 27, 0.06);
+}
+
+.like-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.like-btn.liked {
+  color: var(--danger);
+  border-color: rgba(168, 67, 58, 0.4);
+  background: rgba(168, 67, 58, 0.08);
+}
+
+.like-count {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+/* ---------- Comments ---------- */
+.comments-section {
+  margin-top: 40px;
+}
+
+.comments-heading {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.comment-form {
+  margin-bottom: 24px;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid rgba(237, 231, 216, 0.25);
+  border-radius: var(--radius);
+  background: var(--ink-soft);
+  color: var(--text-on-ink);
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.comment-input::placeholder {
+  color: rgba(237, 231, 216, 0.4);
+}
+
+.comment-signin-note {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comment-item {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(237, 231, 216, 0.1);
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.comment-text {
+  margin: 6px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-on-ink);
+}

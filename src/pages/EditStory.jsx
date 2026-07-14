@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
 
@@ -12,13 +12,38 @@ function countWords(text) {
   return trimmed.split(/\s+/).length
 }
 
-export default function Write() {
+export default function EditStory() {
+  const { id } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
+
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [publishing, setPublishing] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [notAllowed, setNotAllowed] = useState(false)
+
+  useEffect(() => {
+    async function load() {
+      const snap = await getDoc(doc(db, 'stories', id))
+      if (!snap.exists()) {
+        setError('This story no longer exists.')
+        setLoading(false)
+        return
+      }
+      const data = snap.data()
+      if (data.authorId !== user.uid) {
+        setNotAllowed(true)
+        setLoading(false)
+        return
+      }
+      setTitle(data.title)
+      setContent(data.content)
+      setLoading(false)
+    }
+    load()
+  }, [id, user])
 
   const wordCount = useMemo(() => countWords(content), [content])
   const overLimit = wordCount > WORD_LIMIT
@@ -28,14 +53,14 @@ export default function Write() {
   if (overLimit) meterClass += ' over'
   else if (wordCount > WORD_LIMIT * 0.9) meterClass += ' warn'
 
-  async function handlePublish() {
+  async function handleSave() {
     setError(null)
     if (!title.trim()) {
-      setError('Give your story a title before publishing.')
+      setError('Give your story a title before saving.')
       return
     }
     if (wordCount === 0) {
-      setError('Write something before publishing.')
+      setError('A story needs some words in it.')
       return
     }
     if (overLimit) {
@@ -43,31 +68,30 @@ export default function Write() {
       return
     }
 
-    setPublishing(true)
+    setSaving(true)
     try {
-      const docRef = await addDoc(collection(db, 'stories'), {
+      await updateDoc(doc(db, 'stories', id), {
         title: title.trim(),
         content: content.trim(),
         wordCount,
-        authorId: user.uid,
-        authorName: user.displayName || 'Anonymous',
-        likedBy: [],
-        createdAt: serverTimestamp(),
       })
-      navigate(`/story/${docRef.id}`)
+      navigate(`/story/${id}`)
     } catch (err) {
       console.error(err)
-      setError('Something went wrong while publishing. Please try again.')
+      setError('Something went wrong while saving. Please try again.')
     } finally {
-      setPublishing(false)
+      setSaving(false)
     }
   }
+
+  if (loading) return <p className="loading-note">Loading story…</p>
+  if (notAllowed) return <p className="center-note">You can only edit your own stories.</p>
 
   return (
     <div className="page">
       <div className="container">
-        <p className="hero-line">write a story, up to {WORD_LIMIT} words</p>
-        <h1 className="page-title">New story</h1>
+        <p className="hero-line">editing</p>
+        <h1 className="page-title">Edit story</h1>
 
         <div className="write-shell">
           <input
@@ -92,8 +116,8 @@ export default function Write() {
                 {wordCount} / {WORD_LIMIT} words
               </div>
             </div>
-            <button className="btn" onClick={handlePublish} disabled={publishing}>
-              {publishing ? 'Publishing…' : 'Publish'}
+            <button className="btn" onClick={handleSave} disabled={saving}>
+              {saving ? 'Saving…' : 'Save changes'}
             </button>
           </div>
         </div>
