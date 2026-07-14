@@ -218,6 +218,12 @@ button {
   border-radius: var(--radius);
 }
 
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
 /* ---------- Auth / Login ---------- */
 .auth-shell {
   max-width: 420px;
