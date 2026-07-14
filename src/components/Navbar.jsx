@@ -18,6 +18,8 @@ export default function Navbar() {
         </Link>
         <nav className="nav-links">
           <Link to="/">Read</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
           {user && <Link to="/my-stories">My stories</Link>}
           {user ? (
             <>
