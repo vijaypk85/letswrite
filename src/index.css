@@ -548,6 +548,23 @@ button {
   margin-bottom: 0;
 }
 
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--primary);
+}
+
+.inline-link {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
