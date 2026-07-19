@@ -19,6 +19,10 @@ export default function Footer() {
           <Link to="/about">About us</Link>
           <Link to="/contact">Contact us</Link>
         </div>
+        <div className="footer-links">
+          <Link to="/terms">Terms &amp; Conditions</Link>
+          <Link to="/privacy">Privacy Policy</Link>
+        </div>
       </div>
       <div className="footer-bottom">© {new Date().getFullYear()} StoryLoom. All rights reserved.</div>
     </footer>
