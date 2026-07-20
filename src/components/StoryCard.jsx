@@ -11,14 +11,21 @@ function excerptOf(content, maxChars = 180) {
 }
 
 export default function StoryCard({ story }) {
+  const likeCount = (story.likedBy || []).length
+
   return (
     <Link to={`/story/${story.id}`}>
       <article className="story-card">
+        {story.featured && <span className="featured-badge">Editor's pick</span>}
         <h3 className="story-title">{story.title}</h3>
         <div className="story-meta">
           <span>{story.authorName}</span>
           <span>·</span>
           <span>{readingTime(story.wordCount)}</span>
+          <span>·</span>
+          <span>
+            {likeCount} {likeCount === 1 ? 'like' : 'likes'}
+          </span>
         </div>
         <p className="story-excerpt">{excerptOf(story.content)}</p>
       </article>
