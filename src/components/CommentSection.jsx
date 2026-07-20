@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
@@ -15,6 +17,7 @@ export default function CommentSection({ storyId }) {
   const [comments, setComments] = useState([])
   const [text, setText] = useState('')
   const [posting, setPosting] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function CommentSection({ storyId }) {
       collection(db, 'stories', storyId, 'comments'),
       orderBy('createdAt', 'asc')
     )
-    // live-updating: new comments appear without a page refresh
+    // live-updating: new (and deleted) comments appear without a page refresh
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setComments(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })))
     })
@@ -48,6 +51,21 @@ export default function CommentSection({ storyId }) {
       setError('Could not post your comment. Please try again.')
     } finally {
       setPosting(false)
+    }
+  }
+
+  async function handleDelete(commentId) {
+    const confirmed = window.confirm('Delete this comment?')
+    if (!confirmed) return
+
+    setDeletingId(commentId)
+    try {
+      await deleteDoc(doc(db, 'stories', storyId, 'comments', commentId))
+    } catch (err) {
+      console.error(err)
+      window.alert('Could not delete your comment. Please try again.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -83,6 +101,15 @@ export default function CommentSection({ storyId }) {
             <li key={c.id} className="comment-item">
               <div className="comment-meta">
                 <span className="comment-author">{c.authorName}</span>
+                {user && user.uid === c.authorId && (
+                  <button
+                    className="comment-delete-btn"
+                    onClick={() => handleDelete(c.id)}
+                    disabled={deletingId === c.id}
+                  >
+                    {deletingId === c.id ? 'Deleting…' : 'Delete'}
+                  </button>
+                )}
               </div>
               <p className="comment-text">{c.text}</p>
             </li>
