@@ -43,5 +43,15 @@ service cloud.firestore {
         allow update: if false;
       }
     }
+
+    // Reports from the "Report" button on a story. Write-only from the app —
+    // nobody can read, edit, or delete reports from the client; review them
+    // from the Firebase console instead.
+    match /reports/{reportId} {
+      allow read, update, delete: if false;
+      allow create: if request.auth != null
+                    && request.resource.data.reporterId == request.auth.uid
+                    && request.resource.data.storyId is string;
+    }
   }
 }

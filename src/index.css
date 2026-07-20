@@ -606,6 +606,113 @@ button {
   color: var(--text);
 }
 
+.comment-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comment-delete-btn {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 0;
+}
+
+.comment-delete-btn:hover {
+  color: var(--danger);
+  text-decoration: underline;
+}
+
+/* ---------- Story detail: share / report row ---------- */
+.detail-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.detail-actions-row .like-row {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Prev / next story navigation ---------- */
+.story-nav {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.story-nav-btn {
+  flex: 1;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.story-nav-btn-right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.story-nav-btn:hover {
+  border-color: var(--primary);
+}
+
+.story-nav-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.story-nav-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text);
+}
+
+/* ---------- More from this author ---------- */
+.more-from-author {
+  margin-top: 40px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+}
+
+.more-from-author-item {
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+.more-from-author-item:last-child {
+  border-bottom: none;
+}
+
+.more-from-author-item:hover {
+  color: var(--primary);
+}
+
 /* ---------- About / Contact ---------- */
 .info-block {
   background: var(--surface);
