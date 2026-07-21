@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 export default function Privacy() {
+  usePageTitle('Privacy Policy')
   return (
     <div className="page">
       <div className="container">

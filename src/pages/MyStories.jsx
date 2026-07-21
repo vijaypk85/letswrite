@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import { collection, deleteDoc, doc, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
+import SkeletonCard from '../components/SkeletonCard.jsx'
 
 function readingTime(wordCount) {
   const minutes = Math.max(1, Math.round(wordCount / 200))
@@ -10,7 +13,9 @@ function readingTime(wordCount) {
 }
 
 export default function MyStories() {
+  usePageTitle('My stories')
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [stories, setStories] = useState([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
@@ -53,6 +58,7 @@ export default function MyStories() {
     try {
       await deleteDoc(doc(db, 'stories', storyId))
       setStories((prev) => prev.filter((s) => s.id !== storyId))
+      showToast('Story deleted.')
     } catch (err) {
       console.error(err)
       window.alert('Could not delete this story. Please try again.')
@@ -139,7 +145,12 @@ export default function MyStories() {
           </div>
         )}
 
-        {loading && <p className="loading-note">Loading…</p>}
+        {loading && (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        )}
 
         {error && <p className="error-text">{error}</p>}
 

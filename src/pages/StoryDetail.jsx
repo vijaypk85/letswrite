@@ -17,6 +17,8 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 import CommentSection from '../components/CommentSection.jsx'
 import { renderFormattedText } from '../utils/formatStory.jsx'
 
@@ -28,6 +30,7 @@ function readingTime(wordCount) {
 export default function StoryDetail() {
   const { id } = useParams()
   const { user } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
 
   const [story, setStory] = useState(null)
@@ -40,6 +43,8 @@ export default function StoryDetail() {
   const [moreFromAuthor, setMoreFromAuthor] = useState([])
   const [prevStory, setPrevStory] = useState(null)
   const [nextStory, setNextStory] = useState(null)
+
+  usePageTitle(story?.title)
 
   useEffect(() => {
     load()
@@ -150,6 +155,7 @@ export default function StoryDetail() {
         createdAt: serverTimestamp(),
       })
       setReported(true)
+      showToast('Thanks — we\'ve noted this report.')
     } catch (err) {
       console.error(err)
       window.alert('Could not send the report. Please try again.')

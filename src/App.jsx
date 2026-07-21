@@ -12,6 +12,8 @@ import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Terms from './pages/Terms.jsx'
 import Privacy from './pages/Privacy.jsx'
+import NotFound from './pages/NotFound.jsx'
+import ToastContainer from './components/ToastContainer.jsx'
 
 export default function App() {
   return (
@@ -50,9 +52,11 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
+      <ToastContainer />
     </div>
   )
 }
