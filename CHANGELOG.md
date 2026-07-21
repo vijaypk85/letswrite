@@ -2,6 +2,24 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## My Stories page enhancements
+
+**Files touched:** `src/pages/MyStories.jsx`, `src/index.css`
+
+- **Stats bar** — shows total stories published and total likes across all of them, at the top of
+  the page. Always reflects *everything* you've published, regardless of the search box or sort
+  option below it.
+- **Search box** — filters your own stories by title.
+- **Sort options (Newest / Oldest / Most liked)** — unlike the Home feed's version of this, this one
+  is reliable across *all* of your stories, not just a loaded page of them — `MyStories.jsx` has
+  always fetched every story you've published in one query (nobody has thousands of stories), so
+  there's no pagination limitation to work around here.
+- **Empty state CTA** — "Write your first story" button when you haven't published anything yet,
+  matching the same treatment already on the Home feed.
+
+No Firestore rules or index changes were needed for this batch (it reuses the existing
+`authorId + createdAt` composite index).
+
 ## Write page enhancements
 
 **Files touched:** `src/pages/Write.jsx`, `src/pages/StoryDetail.jsx`, `src/utils/formatStory.jsx` (new), `src/index.css`
