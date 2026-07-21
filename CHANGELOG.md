@@ -2,6 +2,42 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## Write page enhancements
+
+**Files touched:** `src/pages/Write.jsx`, `src/pages/StoryDetail.jsx`, `src/utils/formatStory.jsx` (new), `src/index.css`
+
+- **Draft auto-save** — title and content are saved to `sessionStorage` (key: `storyloom-write-draft`)
+  on every change, and restored automatically if you reload the page mid-write. It's cleared as soon
+  as a story is successfully published. Session-only by design: `sessionStorage` clears when the tab
+  closes, so nothing lingers in the browser long-term. (This is a real deployed app, not a Claude
+  Artifact, so `sessionStorage` is fine here — it's just not usable inside Claude.ai's in-chat
+  Artifacts preview, if that ever comes up.)
+- **Unsaved-changes warning** — a native browser confirmation appears if you try to close the tab,
+  refresh, or navigate to a typed URL while there's unsaved text. **Limitation:** this uses the
+  browser's `beforeunload` event, which only fires for actually leaving the page — it does **not**
+  catch clicking another in-app link (e.g. the navbar). Catching in-app navigation too would need
+  react-router's `useBlocker`, which requires switching from `<BrowserRouter>` to a data router
+  (`createBrowserRouter`) — a bigger structural change than fits under "simple," so it's not done here.
+- **Bold / Italic toolbar** — two buttons above the editor wrap the selected text in `**bold**` or
+  `*italic*` markers (or insert placeholder "text" if nothing's selected). This is intentionally
+  *not* full markdown — just enough for basic emphasis. The same rendering is now shared between the
+  Write page's Preview and the published Story detail page, via the new `renderFormattedText()`
+  helper in `src/utils/formatStory.jsx`, so a story looks the same in both places.
+  **Known gap:** story card excerpts on the Home feed and "My stories" still show the raw
+  `**`/`*` characters rather than rendering them, since those are short plain-text previews — low
+  priority to fix, but worth knowing about.
+- **Character count** — sits next to the word count in the ink meter label (e.g. `240 / 2000 words ·
+  1,340 characters`).
+- **Preview toggle** — swaps the title input + textarea for a read-only render of how the story will
+  look once published (same styling as the Story detail page). Word/character counts and the Publish
+  button stay visible and usable in both modes.
+
+No Firestore rules or index changes were needed for this batch.
+
+**Also worth knowing:** `src/pages/EditStory.jsx` (editing an already-published story) was *not*
+updated with any of the above — no draft auto-save, no toolbar, no preview, no character count.
+It's a near-identical layout to `Write.jsx`, so the same changes would drop in easily if wanted later.
+
 ## Story detail page enhancements
 
 **Files touched:** `src/pages/StoryDetail.jsx`, `src/components/CommentSection.jsx`, `firestore.rules`, `src/index.css`
