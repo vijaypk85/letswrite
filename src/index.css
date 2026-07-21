@@ -17,6 +17,22 @@
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
+:root[data-theme='dark'] {
+  --bg: #1c2129;
+  --surface: #262c37;
+  --surface-alt: #2f3642;
+  --primary: #2f9c86;
+  --primary-light: #3ab99f;
+  --accent: #ff6b70;
+  --accent-light: #ff8a8f;
+  --gold: #e0ab4e;
+  --text: #ede7d8;
+  --text-muted: #9a9384;
+  --border: rgba(237, 231, 216, 0.12);
+  --danger: #e2685f;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -33,6 +49,7 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 a {
@@ -78,6 +95,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .brand {
@@ -97,6 +115,12 @@ button {
   font-weight: 500;
 }
 
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -112,12 +136,61 @@ button {
   opacity: 0.75;
   font-size: 14px;
   padding: 0;
+  position: relative;
 }
 
 .nav-links a:hover,
 .nav-links button:hover {
   opacity: 1;
   color: var(--primary);
+}
+
+/* active page gets a small underline, via react-router's NavLink "active" class */
+.nav-links a.active:not(.btn) {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.nav-links a.active:not(.btn)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 1px;
+}
+
+.theme-toggle-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.hamburger-btn {
+  display: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .btn {
@@ -146,6 +219,42 @@ button {
 
 .btn-ghost:hover {
   background: var(--surface-alt);
+}
+
+/* ---------- Mobile menu ---------- */
+@media (max-width: 640px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    z-index: 20;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a.active:not(.btn)::after {
+    display: none;
+  }
+
+  .nav-links a.active:not(.btn) {
+    font-weight: 600;
+  }
 }
 
 /* ---------- Page shells ---------- */

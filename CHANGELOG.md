@@ -2,6 +2,29 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## Navbar / Footer enhancements
+
+**Files touched:** `src/components/Navbar.jsx`, `src/components/Footer.jsx` (no functional change, listed for completeness), `src/index.css`
+
+- **Active page highlighting** — switched from plain `Link` to react-router's `NavLink` in the
+  navbar. The current page's link gets an underline (color + small bar) via the `active` class
+  `NavLink` applies automatically. The "Write"/"Sign in" buttons are excluded from this styling
+  (they're meant to look like buttons, not nav links) via a `:not(.btn)` selector.
+- **Dark mode toggle** — a sun/moon button in the navbar. Implemented by setting a
+  `data-theme="dark"` attribute on `<html>` and defining a `:root[data-theme='dark'] { ... }`
+  override block in `index.css` with dark versions of every existing CSS variable (`--bg`,
+  `--surface`, `--text`, etc). Because every component already styles itself using those variables,
+  nothing else needed to change — the whole site (including the Footer) picks up the dark theme
+  automatically. The choice is saved to `localStorage` (key: `storyloom-theme`) so it's remembered
+  across visits — `localStorage` rather than `sessionStorage` here on purpose, since a theme
+  preference is the kind of thing you'd want to persist, unlike the Write page's draft.
+- **Mobile hamburger menu** — below 640px width, the nav links collapse behind a hamburger button
+  and drop down as a small panel when tapped. Closes automatically on route change (there's a
+  `useEffect` watching `location.pathname`). Above 640px, nothing changes — the navbar looks and
+  behaves exactly as before.
+
+No Firestore rules or index changes were needed for this batch — this was all client-side UI.
+
 ## My Stories page enhancements
 
 **Files touched:** `src/pages/MyStories.jsx`, `src/index.css`
