@@ -397,6 +397,66 @@ button {
   border-top: 1px solid var(--border);
 }
 
+/* ---------- Write toolbar (bold/italic + preview toggle) ---------- */
+.write-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.format-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.format-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.format-btn:hover:not(:disabled) {
+  background: var(--surface-alt);
+  border-color: var(--primary);
+}
+
+.format-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.write-preview {
+  min-height: 340px;
+}
+
+.write-preview .detail-title {
+  font-size: 26px;
+}
+
+.write-preview .detail-body {
+  margin-top: 10px;
+}
+
+.draft-note {
+  font-size: 13.5px;
+  color: var(--primary);
+  background: rgba(20, 99, 86, 0.08);
+  border: 1px solid rgba(20, 99, 86, 0.2);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin: -12px 0 20px;
+}
+
 /* ink meter — signature element: fills as you write, toward the 2000-word cap */
 .ink-meter {
   flex: 1;

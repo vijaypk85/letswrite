@@ -18,6 +18,7 @@ import {
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import CommentSection from '../components/CommentSection.jsx'
+import { renderFormattedText } from '../utils/formatStory.jsx'
 
 function readingTime(wordCount) {
   const minutes = Math.max(1, Math.round(wordCount / 200))
@@ -175,7 +176,7 @@ export default function StoryDetail() {
             <span>·</span>
             <span>{story.wordCount} words</span>
           </div>
-          <p className="detail-body">{story.content}</p>
+          <p className="detail-body">{renderFormattedText(story.content)}</p>
 
           <div className="detail-actions-row">
             <div className="like-row">
