@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 export default function Login() {
+  usePageTitle('Sign in')
   const { user, error, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
 

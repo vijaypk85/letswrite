@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 const WORD_LIMIT = 2000
 
@@ -13,8 +15,10 @@ function countWords(text) {
 }
 
 export default function EditStory() {
+  usePageTitle('Edit story')
   const { id } = useParams()
   const { user } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
 
   const [title, setTitle] = useState('')
@@ -75,6 +79,7 @@ export default function EditStory() {
         content: content.trim(),
         wordCount,
       })
+      showToast('Story updated.')
       navigate(`/story/${id}`)
     } catch (err) {
       console.error(err)

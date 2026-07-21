@@ -1,4 +1,8 @@
+import { usePageTitle } from '../hooks/usePageTitle.js'
+
 export default function Contact() {
+  usePageTitle('Contact')
+
   return (
     <div className="page">
       <div className="container">
@@ -32,7 +36,7 @@ export default function Contact() {
               <br />
               12 Example Street, Heritage Town
               <br />
-              Chennai, 605001
+              Puducherry, 605001
               <br />
               India
             </p>

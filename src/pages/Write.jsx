@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 import { renderFormattedText } from '../utils/formatStory.jsx'
 
 const WORD_LIMIT = 2000
@@ -15,7 +17,9 @@ function countWords(text) {
 }
 
 export default function Write() {
+  usePageTitle('Write')
   const { user } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
   const textareaRef = useRef(null)
 
@@ -120,6 +124,7 @@ export default function Write() {
         createdAt: serverTimestamp(),
       })
       sessionStorage.removeItem(DRAFT_KEY)
+      showToast('Story published!')
       navigate(`/story/${docRef.id}`)
     } catch (err) {
       console.error(err)

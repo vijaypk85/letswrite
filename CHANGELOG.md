@@ -2,6 +2,32 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## General / global enhancements
+
+**Files touched:** `src/context/ToastContext.jsx` (new), `src/components/ToastContainer.jsx` (new),
+`src/components/SkeletonCard.jsx` (new), `src/hooks/usePageTitle.js` (new), `src/pages/NotFound.jsx`
+(new), `public/favicon.svg` (new), `index.html`, `src/main.jsx`, `src/App.jsx`, and a small edit to
+every page component.
+
+- **Loading skeleton cards** — `Home.jsx` and `MyStories.jsx` now show a few pulsing placeholder
+  cards (`SkeletonCard.jsx`) instead of a plain "Loading…" line while stories are being fetched.
+  Other pages (`StoryDetail.jsx`, `EditStory.jsx`) still use the plain loading text — they only ever
+  load one item, so a skeleton adds less value there.
+- **404 page** — a catch-all route (`path="*"`) now renders `NotFound.jsx` for any URL that doesn't
+  match, instead of a blank page.
+- **Favicon + per-page browser tab titles** — added `public/favicon.svg` (a simple open-book mark)
+  and linked it in `index.html`. Every page now calls a new `usePageTitle(title)` hook to set the
+  browser tab title (e.g. "Write · StoryLoom", "My stories · StoryLoom") instead of every page
+  showing the same generic title. The Story detail page sets its title dynamically once the story
+  loads, so the tab shows the actual story title.
+- **Toast notifications** — a lightweight `ToastProvider`/`useToast()` context (no new dependency)
+  now shows a small dismissible message in the bottom-right corner for: publishing a story, editing
+  a story, deleting a story, deleting a comment, and submitting a report. Toasts auto-dismiss after
+  3 seconds or on click. Likes and sign-in errors intentionally still use their existing inline UI
+  rather than a toast, since those need to stay visible longer or are tied to a specific button.
+
+No Firestore rules or index changes were needed for this batch — all client-side.
+
 ## Navbar / Footer enhancements
 
 **Files touched:** `src/components/Navbar.jsx`, `src/components/Footer.jsx` (no functional change, listed for completeness), `src/index.css`

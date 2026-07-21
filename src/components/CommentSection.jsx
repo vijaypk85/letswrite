@@ -11,9 +11,11 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function CommentSection({ storyId }) {
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [comments, setComments] = useState([])
   const [text, setText] = useState('')
   const [posting, setPosting] = useState(false)
@@ -61,6 +63,7 @@ export default function CommentSection({ storyId }) {
     setDeletingId(commentId)
     try {
       await deleteDoc(doc(db, 'stories', storyId, 'comments', commentId))
+      showToast('Comment deleted.')
     } catch (err) {
       console.error(err)
       window.alert('Could not delete your comment. Please try again.')

@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom'
 import { collection, getDocs, limit, orderBy, query, startAfter } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import StoryCard from '../components/StoryCard.jsx'
+import SkeletonCard from '../components/SkeletonCard.jsx'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 const PAGE_SIZE = 20
 
 export default function Home() {
+  usePageTitle('Read')
   const [stories, setStories] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -104,7 +107,13 @@ export default function Home() {
           </div>
         </div>
 
-        {loading && <p className="loading-note">Loading stories…</p>}
+        {loading && (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        )}
 
         {error && <p className="error-text">{error}</p>}
 
