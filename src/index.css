@@ -13,6 +13,7 @@
   --danger: #c1423a;
   --radius: 8px;
   --shadow: 0 2px 10px rgba(36, 33, 27, 0.06);
+  --text-soft: #4a453b;
   --font-display: 'Fraunces', serif;
   --font-body: 'Inter', system-ui, sans-serif;
 }
@@ -28,6 +29,7 @@
   --gold: #e0ab4e;
   --text: #ede7d8;
   --text-muted: #9a9384;
+  --text-soft: #cfc9ba;
   --border: rgba(237, 231, 216, 0.12);
   --danger: #e2685f;
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
@@ -315,7 +317,7 @@ button {
 .story-excerpt {
   font-size: 15px;
   line-height: 1.55;
-  color: #4a453b;
+  color: var(--text-soft);
 }
 
 .load-more-row {
@@ -1023,7 +1025,7 @@ button {
 .info-block p {
   font-size: 15.5px;
   line-height: 1.75;
-  color: #4a453b;
+  color: var(--text-soft);
   margin: 0 0 14px;
 }
 
