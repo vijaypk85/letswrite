@@ -23,6 +23,7 @@ export default function EditStory() {
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [status, setStatus] = useState('published')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
@@ -44,6 +45,9 @@ export default function EditStory() {
       }
       setTitle(data.title)
       setContent(data.content)
+      // Older stories created before drafts existed have no status field —
+      // treat those as already published.
+      setStatus(data.status === 'draft' ? 'draft' : 'published')
       setLoading(false)
     }
     load()
@@ -78,6 +82,7 @@ export default function EditStory() {
         title: title.trim(),
         content: content.trim(),
         wordCount,
+        status,
       })
       showToast('Story updated.')
       navigate(`/story/${id}`)
@@ -99,6 +104,25 @@ export default function EditStory() {
         <h1 className="page-title">Edit story</h1>
 
         <div className="write-shell">
+          <div className="status-toggle-row">
+            <span className="settings-label">Status:</span>
+            <div className="sort-toggle">
+              <button
+                type="button"
+                className={status === 'draft' ? 'sort-btn active' : 'sort-btn'}
+                onClick={() => setStatus('draft')}
+              >
+                Draft
+              </button>
+              <button
+                type="button"
+                className={status === 'published' ? 'sort-btn active' : 'sort-btn'}
+                onClick={() => setStatus('published')}
+              >
+                Published
+              </button>
+            </div>
+          </div>
           <input
             className="title-input"
             placeholder="Story title"
@@ -122,7 +146,7 @@ export default function EditStory() {
               </div>
             </div>
             <button className="btn" onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving…' : 'Save changes'}
+              {saving ? 'Saving…' : status === 'draft' ? 'Save as draft' : 'Save changes'}
             </button>
           </div>
         </div>

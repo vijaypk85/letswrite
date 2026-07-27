@@ -97,14 +97,14 @@ export default function Write() {
     })
   }
 
-  async function handlePublish() {
+  async function handleSave(status) {
     setError(null)
     if (!title.trim()) {
-      setError('Give your story a title before publishing.')
+      setError('Give your story a title before saving.')
       return
     }
     if (wordCount === 0) {
-      setError('Write something before publishing.')
+      setError('Write something before saving.')
       return
     }
     if (overLimit) {
@@ -121,14 +121,16 @@ export default function Write() {
         authorId: user.uid,
         authorName: profile?.displayName || user.displayName || 'Anonymous',
         likedBy: [],
+        views: 0,
+        status,
         createdAt: serverTimestamp(),
       })
       sessionStorage.removeItem(DRAFT_KEY)
-      showToast('Story published!')
-      navigate(`/story/${docRef.id}`)
+      showToast(status === 'draft' ? 'Draft saved.' : 'Story published!')
+      navigate(status === 'draft' ? '/my-stories' : `/story/${docRef.id}`)
     } catch (err) {
       console.error(err)
-      setError('Something went wrong while publishing. Please try again.')
+      setError('Something went wrong while saving. Please try again.')
     } finally {
       setPublishing(false)
     }
@@ -210,9 +212,18 @@ export default function Write() {
                 {wordCount} / {WORD_LIMIT} words · {content.length} characters
               </div>
             </div>
-            <button className="btn" onClick={handlePublish} disabled={publishing}>
-              {publishing ? 'Publishing…' : 'Publish'}
-            </button>
+            <div className="write-actions">
+              <button
+                className="btn-ghost btn-small"
+                onClick={() => handleSave('draft')}
+                disabled={publishing}
+              >
+                Save as draft
+              </button>
+              <button className="btn" onClick={() => handleSave('published')} disabled={publishing}>
+                {publishing ? 'Publishing…' : 'Publish'}
+              </button>
+            </div>
           </div>
         </div>
         {error && <p className="error-text">{error}</p>}

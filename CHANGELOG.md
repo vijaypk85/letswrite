@@ -2,6 +2,68 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## My Stories: drafts, analytics, bulk actions, duplicate
+
+**Files touched:** `src/pages/Write.jsx`, `src/pages/EditStory.jsx`, `src/pages/Home.jsx`,
+`src/pages/StoryDetail.jsx`, `src/pages/MyStories.jsx`, `src/components/StoryViewsPanel.jsx` (new),
+`firestore.rules`, `src/index.css`
+
+### Draft vs Published status
+
+- Stories now have a `status` field (`'draft'` or `'published'`), set in `Write.jsx` (two buttons:
+  "Save as draft" / "Publish") and editable in `EditStory.jsx` (a Draft/Published toggle) and in
+  `MyStories.jsx` (a per-story Publish/Unpublish button).
+- **No migration needed.** The Home feed hides drafts by filtering `stories.filter(s => s.status
+  !== 'draft')` **client-side** in `Home.jsx`, rather than adding `where('status', '==',
+  'published')` to the Firestore query. This means stories created before this update (which have
+  no `status` field at all) are correctly treated as published and keep showing up, with nothing to
+  backfill.
+- **Why not enforce this at the Firestore rules level too?** I initially wrote a rule to make drafts
+  actually unreadable by anyone but their author, then caught a real problem before shipping it:
+  Firestore rejects an entire collection *query* if it can't prove every possible matching document
+  satisfies the read rule. Since the Home feed query doesn't filter by `status` in the query itself,
+  a per-document "drafts are unreadable" rule would have made the whole feed query fail with a
+  permission error. The fix that's actually in place: `allow read: if true` stays as it was, and
+  drafts are only kept out of the feed *listing* — a draft is still reachable by its exact
+  (random, unguessable) Firestore document URL if someone has it, same as it would be if this were
+  a simple "unlisted" flag rather than true access control. Worth knowing if a stricter
+  "drafts are truly private" guarantee ever becomes a requirement — that would need either
+  restructuring the Home query to filter by `status` server-side (which *would* need the migration
+  this update avoided) or moving draft/published into separate collections entirely.
+
+### Basic view analytics ("views over time")
+
+- Every story now has a `views` counter (total) plus a `dailyViews` subcollection
+  (`stories/{id}/dailyViews/{YYYY-MM-DD}`, one doc per calendar day with a `count`) written to from
+  `StoryDetail.jsx` on load.
+- Counted once per browser tab session per story (guarded by a `sessionStorage` flag), so refreshing
+  or re-reading the same story repeatedly doesn't inflate the count within one visit. This is a
+  rough, "basic" counter as requested — not tamper-proof analytics, and technically anyone could
+  script repeated visits to inflate it, similar to most simple view counters.
+- `MyStories.jsx` has a "Views" button per story that lazily loads `StoryViewsPanel.jsx`, showing
+  total views plus a 7-day bar sparkline. It's lazy (fetches only when clicked) specifically to
+  avoid firing a Firestore read for every single story's analytics every time the My Stories page
+  loads — with many stories, that could add up.
+- **Firestore rules:** the `views` field on a story can now be updated by anyone, signed in or not
+  (view counting shouldn't require an account) — but *only* that field; every other update path
+  still requires being the story's author or (for `likedBy`) being signed in. The new `dailyViews`
+  subcollection is writable by anyone (bump the count) but only readable by the story's author (it's
+  your analytics, not public data).
+
+### Bulk actions
+
+- Checkboxes on each story in `MyStories.jsx`; selecting any shows a bar with "X selected", "Cancel",
+  and "Delete selected" (runs the deletes in parallel via `Promise.all`).
+
+### Duplicate a story
+
+- "Duplicate" button copies title (prefixed "Copy of "), content, and word count into a *new* story,
+  always created with `status: 'draft'` regardless of the original's status — so duplicating a
+  published story doesn't immediately re-publish a second copy of it. Navigates straight to the Edit
+  page for the new copy.
+
+No new Firestore index was needed for any of this.
+
 ## Login / Auth enhancements
 
 **Files touched:** `src/context/AuthContext.jsx`, `src/pages/Settings.jsx` (new), `src/pages/Write.jsx`,
