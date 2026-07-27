@@ -1050,6 +1050,65 @@ button {
   text-decoration: underline;
 }
 
+/* ---------- Settings page ---------- */
+.settings-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.settings-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.danger-zone {
+  border: 1px solid rgba(193, 66, 58, 0.3);
+}
+
+.danger-heading {
+  color: var(--danger);
+}
+
+.danger-zone .settings-input {
+  margin: 14px 0 12px;
+  width: 100%;
+}
+
+.btn-danger-solid {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--danger);
+  background: var(--danger);
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.btn-danger-solid:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-danger-solid:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

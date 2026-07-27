@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../context/ToastContext.jsx'
 
 export default function CommentSection({ storyId }) {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { showToast } = useToast()
   const [comments, setComments] = useState([])
   const [text, setText] = useState('')
@@ -44,7 +44,7 @@ export default function CommentSection({ storyId }) {
       await addDoc(collection(db, 'stories', storyId, 'comments'), {
         text: text.trim(),
         authorId: user.uid,
-        authorName: user.displayName || 'Anonymous',
+        authorName: profile?.displayName || user.displayName || 'Anonymous',
         createdAt: serverTimestamp(),
       })
       setText('')

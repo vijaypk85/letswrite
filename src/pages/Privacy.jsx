@@ -56,9 +56,11 @@ export default function Privacy() {
         <div className="info-block">
           <h2 className="section-heading">Your choices</h2>
           <p>
-            You can edit or delete any story or comment you've posted at any time. If you'd like
-            your account and all associated data removed entirely, contact us and we'll take care
-            of it.
+            You can edit or delete any story or comment you've posted at any time. You can change
+            your display name, or permanently delete your account and everything you've published,
+            from the Settings page. Comments you've left on other people's stories aren't
+            automatically removed when you delete your account — contact us if you'd like those
+            cleared too.
           </p>
         </div>
 

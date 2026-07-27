@@ -83,6 +83,11 @@ export default function Navbar() {
                 My stories
               </NavLink>
             )}
+            {user && (
+              <NavLink to="/settings" className={navLinkClass}>
+                Settings
+              </NavLink>
+            )}
             {user ? (
               <>
                 <NavLink to="/write" className="btn">
