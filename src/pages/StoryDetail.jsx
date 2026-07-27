@@ -8,10 +8,12 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   limit,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore'
@@ -67,6 +69,29 @@ export default function StoryDetail() {
     setLoading(false)
     loadMoreFromAuthor(data)
     loadNeighbors(data)
+    recordView(data.id)
+  }
+
+  // Counts a view once per browser tab session per story — refreshing the
+  // same story repeatedly, or the author viewing their own story, only
+  // counts once per session, not every render. This is intentionally a
+  // rough "basic" counter, not tamper-proof analytics.
+  async function recordView(storyId) {
+    const key = `storyloom-viewed-${storyId}`
+    if (sessionStorage.getItem(key)) return
+    sessionStorage.setItem(key, '1')
+
+    const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+
+    try {
+      await Promise.all([
+        updateDoc(doc(db, 'stories', storyId), { views: increment(1) }),
+        setDoc(doc(db, 'stories', storyId, 'dailyViews', today), { count: increment(1) }, { merge: true }),
+      ])
+    } catch (err) {
+      // Not critical to the reading experience — fail quietly.
+      console.error('Could not record view', err)
+    }
   }
 
   async function loadMoreFromAuthor(currentStory) {
@@ -181,6 +206,8 @@ export default function StoryDetail() {
             <span>{readingTime(story.wordCount)}</span>
             <span>·</span>
             <span>{story.wordCount} words</span>
+            <span>·</span>
+            <span>{story.views || 0} views</span>
           </div>
           <p className="detail-body">{renderFormattedText(story.content)}</p>
 

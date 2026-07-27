@@ -62,8 +62,11 @@ export default function Home() {
   // Search and "Most liked" sort both work only on the stories already loaded
   // on the page (not the full collection) — keeps this simple without needing
   // a separate search index or a stored like-count field for server-side sorting.
+  // Drafts are filtered out here rather than in the Firestore query itself,
+  // so older stories that predate the draft/published field (no `status` at
+  // all) still show up as published, with no data migration required.
   const visibleStories = useMemo(() => {
-    let list = stories
+    let list = stories.filter((s) => s.status !== 'draft')
 
     if (search.trim()) {
       const q = search.trim().toLowerCase()
@@ -126,7 +129,11 @@ export default function Home() {
           </div>
         )}
 
-        {!loading && !error && stories.length > 0 && visibleStories.length === 0 && (
+        {!loading && !error && stories.length > 0 && visibleStories.length === 0 && !search && (
+          <div className="empty-state">No published stories to show yet.</div>
+        )}
+
+        {!loading && !error && stories.length > 0 && visibleStories.length === 0 && search && (
           <div className="empty-state">No stories match "{search}".</div>
         )}
 

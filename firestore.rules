@@ -2,7 +2,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /stories/{storyId} {
-      // Anyone (logged in or not) can read published stories.
+      // Anyone (logged in or not) can read any story document, including
+      // drafts. Drafts are kept out of the public Home feed by filtering
+      // client-side in Home.jsx instead of at the rules level — Firestore
+      // rejects an entire collection query if it can't prove every possible
+      // matching document satisfies the read rule, and the Home feed query
+      // doesn't filter by `status` itself (see Home.jsx for why), so a
+      // stricter per-document rule here would break that query outright.
+      // Practically: a draft is only reachable if someone has its exact
+      // (random, unguessable) story URL — it just won't show up anywhere.
       allow read: if true;
 
       // Only a signed-in user can create a story, and only as themselves.
@@ -14,13 +22,14 @@ service cloud.firestore {
                     && request.resource.data.wordCount <= 2000;
 
       // The author can edit or delete any field on their own story.
-      // Any other signed-in user may only ever touch the `likedBy` field
-      // (used by the like button) — everything else about the story is locked.
-      allow update: if request.auth != null
-                    && (
-                      resource.data.authorId == request.auth.uid
-                      || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy'])
-                    );
+      // Any signed-in user may only ever touch the `likedBy` field (used by
+      // the like button). Anyone at all — including signed-out readers — may
+      // touch only the `views` field, since view counting shouldn't require
+      // an account. Everything else about the story is locked to its author.
+      allow update: if (request.auth != null && resource.data.authorId == request.auth.uid)
+                    || (request.auth != null
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy']))
+                    || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views']);
 
       allow delete: if request.auth != null
                     && resource.data.authorId == request.auth.uid;
@@ -41,6 +50,20 @@ service cloud.firestore {
         allow delete: if request.auth != null
                       && resource.data.authorId == request.auth.uid;
         allow update: if false;
+      }
+
+      // One doc per calendar day holding that day's view count, used for
+      // the "views over time" sparkline on My Stories. Anyone can bump the
+      // count (view counting doesn't require an account), but only the
+      // story's author can read the breakdown — it's their analytics, not
+      // public data.
+      match /dailyViews/{day} {
+        allow read: if request.auth != null
+                    && get(/databases/$(database)/documents/stories/$(storyId)).data.authorId == request.auth.uid;
+        allow create: if request.resource.data.keys().hasOnly(['count'])
+                      && request.resource.data.count is int;
+        allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count']);
+        allow delete: if false;
       }
     }
 

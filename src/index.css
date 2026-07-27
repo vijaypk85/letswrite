@@ -637,6 +637,25 @@ button {
   border-top: 1px solid var(--border);
 }
 
+.write-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.status-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.settings-label {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
 /* ---------- Write toolbar (bold/italic + preview toggle) ---------- */
 .write-toolbar {
   display: flex;
@@ -766,6 +785,129 @@ button {
   display: flex;
   gap: 10px;
   margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+/* ---------- My stories: card layout with checkbox ---------- */
+.my-story-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-story-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.story-checkbox {
+  margin-top: 6px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.my-story-link {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Status badges ---------- */
+.status-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.status-badge.published {
+  background: rgba(20, 99, 86, 0.12);
+  color: var(--primary);
+}
+
+.status-badge.draft {
+  background: rgba(216, 154, 62, 0.15);
+  color: var(--gold);
+}
+
+.status-filter {
+  margin-bottom: 20px;
+}
+
+/* ---------- Bulk actions ---------- */
+.bulk-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+.bulk-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---------- Views analytics panel ---------- */
+.views-panel {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.views-panel-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.views-panel-total {
+  font-size: 18px;
+}
+
+.views-panel-loading {
+  padding: 10px 0;
+}
+
+.sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 70px;
+}
+
+.sparkline-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 4px;
+}
+
+.sparkline-bar {
+  width: 100%;
+  max-width: 22px;
+  background: var(--primary);
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+}
+
+.sparkline-label {
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
 .btn-small {
