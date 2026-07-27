@@ -53,5 +53,12 @@ service cloud.firestore {
                     && request.resource.data.reporterId == request.auth.uid
                     && request.resource.data.storyId is string;
     }
+
+    // Profile document per user — holds the custom display name set from
+    // the Settings page. Only the user themselves can read or write it.
+    match /users/{userId} {
+      allow read, create, update, delete: if request.auth != null
+                                           && request.auth.uid == userId;
+    }
   }
 }

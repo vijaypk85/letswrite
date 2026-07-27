@@ -8,6 +8,7 @@ import Write from './pages/Write.jsx'
 import EditStory from './pages/EditStory.jsx'
 import StoryDetail from './pages/StoryDetail.jsx'
 import MyStories from './pages/MyStories.jsx'
+import Settings from './pages/Settings.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Terms from './pages/Terms.jsx'
@@ -49,6 +50,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <MyStories />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />

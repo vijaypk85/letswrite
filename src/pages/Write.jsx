@@ -18,7 +18,7 @@ function countWords(text) {
 
 export default function Write() {
   usePageTitle('Write')
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { showToast } = useToast()
   const navigate = useNavigate()
   const textareaRef = useRef(null)
@@ -119,7 +119,7 @@ export default function Write() {
         content: content.trim(),
         wordCount,
         authorId: user.uid,
-        authorName: user.displayName || 'Anonymous',
+        authorName: profile?.displayName || user.displayName || 'Anonymous',
         likedBy: [],
         createdAt: serverTimestamp(),
       })

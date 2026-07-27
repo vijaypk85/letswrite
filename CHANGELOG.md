@@ -2,6 +2,39 @@
 
 Notes on recent feature additions, for whoever's picking this codebase back up later.
 
+## Login / Auth enhancements
+
+**Files touched:** `src/context/AuthContext.jsx`, `src/pages/Settings.jsx` (new), `src/pages/Write.jsx`,
+`src/components/CommentSection.jsx`, `src/components/Navbar.jsx`, `src/App.jsx`, `src/pages/Privacy.jsx`,
+`firestore.rules`, `src/index.css`
+
+- **Custom display name** — added a `users` collection in Firestore: one profile doc per account
+  (`users/{uid}`), holding `{ displayName, email, createdAt }`. `AuthContext` now fetches this on
+  sign-in, creating it (seeded with the Google account name) the first time someone signs in. A new
+  **Settings** page (`/settings`, linked in the navbar for signed-in users) lets you change it.
+  `Write.jsx` and `CommentSection.jsx` now use `profile.displayName` (falling back to the Google
+  name) instead of always using the Google name directly.
+  **Known limitation:** changing your display name does *not* retroactively update the `authorName`
+  already stored on stories/comments you've already published — those are denormalized at creation
+  time. This is a common, intentional tradeoff (avoids a costly rewrite of every past post on every
+  name change) but worth knowing about.
+- **Account deletion** — also on the Settings page, in a "Delete account" section requiring you to
+  type `DELETE` to confirm. The flow: re-prompts Google sign-in (Firebase requires a *recent*
+  sign-in before allowing account deletion — `reauthenticateWithPopup`), deletes every story you've
+  published, deletes your `users/{uid}` profile doc, then deletes the Firebase Auth account itself,
+  in that order (data must be deleted *before* the auth account, since Firestore rules require you
+  to still be authenticated as yourself to delete your own stories).
+  **Known limitation:** comments you've left on *other* people's stories are not automatically
+  deleted (would need a `collectionGroup('comments')` query across every story, which needs its own
+  Firestore index and adds real complexity for a "simple" change) — the Privacy Policy and the
+  Settings page both say to contact us for full cleanup of those.
+
+**Firestore rules change:** added a `match /users/{userId}` block — a user can only read/write their
+own profile document. Re-publish `firestore.rules` after pulling this in.
+
+No new Firestore index was needed — the account-deletion story query (`where('authorId', '==', uid)`,
+no `orderBy`) is a single-field filter, which Firestore indexes automatically.
+
 ## General / global enhancements
 
 **Files touched:** `src/context/ToastContext.jsx` (new), `src/components/ToastContainer.jsx` (new),
